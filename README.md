@@ -68,7 +68,27 @@
 - Document validator
 - Configuration management
 
----
+## Pipeline
+
+Current pipeline
+
+Raw JSON
+
+↓
+
+Loader
+
+↓
+
+Validator
+
+↓
+
+Logging
+
+↓
+
+## Ready for preprocessing
 
 ## License
 
