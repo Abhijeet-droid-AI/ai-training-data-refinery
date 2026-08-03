@@ -4,7 +4,7 @@ import json
 class DataLoader:
     """Loads raw documents from JSON files."""
 
-    def __init__(self, filepath: str):
+    def __init__(self, filepath):
         self.filepath = filepath
 
     def load(self):

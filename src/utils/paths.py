@@ -1,17 +1,19 @@
 from pathlib import Path
 
+# Project Root
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+# Directories
+CONFIG_DIR = PROJECT_ROOT / "configs"
 
 DATA_DIR = PROJECT_ROOT / "data"
 
-RAW_DATA = DATA_DIR / "raw"
+RAW_DATA_DIR = DATA_DIR / "raw"
 
-INTERIM_DATA = DATA_DIR / "interim"
+INTERIM_DATA_DIR = DATA_DIR / "interim"
 
-PROCESSED_DATA = DATA_DIR / "processed"
+PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
-PARQUET_DATA = DATA_DIR / "parquet"
-
-CONFIG_DIR = PROJECT_ROOT / "configs"
+PARQUET_DATA_DIR = DATA_DIR / "parquet"
 
 DOCS_DIR = PROJECT_ROOT / "docs"

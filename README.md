@@ -90,6 +90,32 @@ Logging
 
 ## Ready for preprocessing
 
+## Current Architecture
+
+Raw JSON
+
+↓
+
+Loader
+
+↓
+
+Validator
+
+↓
+
+Logger
+
+↓
+
+Future Preprocessing
+
+## Development Tools
+
+- Black
+- Ruff
+- Pytest
+
 ## License
 
 MIT
