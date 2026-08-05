@@ -1,3 +1,2 @@
 data:
-  raw_path: "data/raw/sample_documents.json"
-
+  raw_file: wiki_sample.json

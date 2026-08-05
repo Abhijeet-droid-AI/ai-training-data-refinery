@@ -1,47 +1,59 @@
-import logging
-import yaml
-
-from loader import DataLoader
-from validator import DataValidator
 from pathlib import Path
+from src.ingestion.loader import DataLoader
+from src.ingestion.validator import DataValidator
 from src.utils.logger import get_logger
 from src.utils.paths import RAW_DATA_DIR
+from src.utils.config import load_config
+from src.profiling.profiler import DatasetProfiler
+from src.profiling.report_writer import ReportWriter
 
 logger = get_logger(__name__)
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CONFIG_PATH = PROJECT_ROOT / "configs" / "config.yaml"
-
-logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
-
-
-def load_config():
-    with open(CONFIG_PATH, "r", encoding="utf-8") as file:
-        return yaml.safe_load(file)
-
+# logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 
 def main():
+    dataset_path = RAW_DATA_DIR / "wiki_sample.json"
     config = load_config()
 
-    loader = DataLoader(RAW_DATA_DIR / "sample_data.json")
+    loader = DataLoader(
+        RAW_DATA_DIR / config["data"]["raw_file"]
+    )
 
-    documents = loader.load()
+    try:
+        documents = loader.load()
+    except FileNotFoundError:
+        logger.error("Dataset not found.")
+        return
 
     validator = DataValidator()
 
     valid_docs, invalid_docs = validator.validate(documents)
 
-    logging.info(f"Invalid documents        : {len(invalid_docs)}")
+    logger.info("=" * 60)
+    logger.info("Data Ingestion Summary")
+    logger.info("=" * 60)
+    logger.info(f"Total Documents   : {len(documents)}")
+    logger.info(f"Valid Documents   : {len(valid_docs)}")
+    logger.info(f"Invalid Documents : {len(invalid_docs)}")
+    logger.info("=" * 60)
+
+    profiler = DatasetProfiler(valid_docs)
+
+    report = profiler.profile()
+
+    report_writer = ReportWriter()
+
+    report_writer.save(report)
+
+    logger.info("Dataset profile generated successfully.")
 
     if invalid_docs:
-        logging.warning("Invalid document details:")
+        logger.warning("Invalid document details:")
 
         for invalid in invalid_docs:
-            logging.warning(
-                f"Document ID: {invalid['document'].get('id', 'Unknown')} "
-                f"| Missing Fields: {invalid['missing_fields']}"
+            logger.warning(
+                f"Document ID: {invalid['document'].get('id', 'Unknown')} | "
+                f"Missing Fields: {invalid['missing_fields']}"
             )
-
 
 if __name__ == "__main__":
     main()

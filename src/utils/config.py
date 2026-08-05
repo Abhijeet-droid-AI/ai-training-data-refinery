@@ -1,5 +1,6 @@
 import yaml
-from src.utils.config import CONFIG_DIR
+
+from src.utils.paths import CONFIG_DIR
 
 
 def load_config():
