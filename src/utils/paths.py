@@ -14,4 +14,6 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
 PARQUET_DATA_DIR = DATA_DIR / "parquet"
 
+PARQUET_FILE = PARQUET_DATA_DIR / "training_dataset.parquet"
+
 DOCS_DIR = PROJECT_ROOT / "docs"

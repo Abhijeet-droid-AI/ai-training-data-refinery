@@ -6,6 +6,8 @@ from src.utils.paths import RAW_DATA_DIR
 from src.utils.config import load_config
 from src.profiling.profiler import DatasetProfiler
 from src.profiling.report_writer import ReportWriter
+from src.storage.parquet_converter import ParquetConverter
+from src.utils.paths import PARQUET_FILE
 
 logger = get_logger(__name__)
 # logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
@@ -45,6 +47,12 @@ def main():
     report_writer.save(report)
 
     logger.info("Dataset profile generated successfully.")
+
+    converter = ParquetConverter(valid_docs)
+
+    converter.convert(PARQUET_FILE)
+
+    logger.info("Parquet dataset created successfully.")
 
     if invalid_docs:
         logger.warning("Invalid document details:")

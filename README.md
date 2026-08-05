@@ -116,6 +116,24 @@ Future Preprocessing
 - Ruff
 - Pytest
 
+## Storage Layer
+
+Current storage pipeline:
+
+Raw JSON
+│
+▼
+Validation
+│
+▼
+Profiling
+│
+▼
+Parquet Conversion
+│
+▼
+Training Dataset
+
 ## License
 
 MIT
