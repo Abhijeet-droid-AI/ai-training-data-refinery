@@ -8,6 +8,8 @@ from src.profiling.report_writer import ReportWriter
 from src.storage.parquet_converter import ParquetConverter
 from src.analytics.analytics_report import AnalyticsReport
 from src.preprocessing.pipeline import PreprocessingPipeline
+from src.language.filter import LanguageFilter
+from src.language.report import LanguageReport
 
 logger = get_logger(__name__)
 # logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
@@ -135,9 +137,31 @@ def main() -> None:
                     invalid["missing_fields"],
                 )
 
+        # --------------------------------------------------
+        # Language Distribution Report
+        # --------------------------------------------------
+        logger.info("Generating language distribution report...")
+
+        language_filter = LanguageFilter(["en"])
+        filtered_docs, rejected_docs = language_filter.filter(processed_docs)
+        # logger.info("Language distribution report generated successfully.")
+
+        logger.info(
+            "Language Filter: %d accepted | %d rejected",
+            len(filtered_docs),
+            len(rejected_docs),
+        )
+
         logger.info("=" * 60)
         logger.info("Pipeline completed successfully.")
         logger.info("=" * 60)
+
+        #Language Distribution Report
+        language_report = LanguageReport()
+
+        report = language_report.generate(filtered_docs)
+
+        logger.info(report)
 
     except FileNotFoundError as exc:
         logger.error("Dataset file not found: %s", exc)

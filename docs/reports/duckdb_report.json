@@ -1,8 +1,8 @@
 {
-    "total_documents": 4,
-    "average_text_length": 87.25,
-    "minimum_text_length": 72,
-    "maximum_text_length": 99,
-    "unique_titles": 4,
-    "average_title_length": 15.25
+    "total_documents": 3,
+    "average_text_length": 22.666666666666668,
+    "minimum_text_length": 13,
+    "maximum_text_length": 33,
+    "unique_titles": 3,
+    "average_title_length": 5.666666666666667
 }

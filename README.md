@@ -172,6 +172,14 @@ Current preprocessing stages:
 - Whitespace Cleanup
 - Control Character Removal
 
+## Language Processing
+
+Current features:
+
+- Language Detection
+- Language Filtering
+- Language Distribution Report
+
 ## License
 
 MIT
