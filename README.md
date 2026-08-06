@@ -134,6 +134,17 @@ Parquet Conversion
 ▼
 Training Dataset
 
+## Benchmarking
+
+Current benchmark modules:
+
+- Pandas
+- Polars
+
+Goal:
+
+Measure execution time and memory usage for different processing engines.
+
 ## License
 
 MIT

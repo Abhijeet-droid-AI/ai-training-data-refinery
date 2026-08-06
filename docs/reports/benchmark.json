@@ -1,0 +1,6 @@
+{
+	"dataset": "wiki_sample.json",
+	"rows": 4,
+	"pandas_time": 0.215378,
+	"polars_time": 0.000741
+}
