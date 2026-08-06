@@ -180,6 +180,16 @@ Current features:
 - Language Filtering
 - Language Distribution Report
 
+## Document Quality Engine
+
+Current heuristics:
+
+- Document Length
+- Punctuation Ratio
+- Digit Ratio
+- Vocabulary Diversity
+- Quality Grade (A–F)
+
 ## License
 
 MIT

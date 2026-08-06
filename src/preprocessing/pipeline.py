@@ -1,8 +1,7 @@
 from src.preprocessing.cleaner import TextCleaner
 from src.preprocessing.normalizer import TextNormalizer
 from src.language.detector import LanguageDetector
-
-
+from src.quality.scorer import QualityScorer
 
 class PreprocessingPipeline:
 
@@ -10,6 +9,7 @@ class PreprocessingPipeline:
         self.cleaner = TextCleaner()
         self.normalizer = TextNormalizer()
         self.detector = LanguageDetector()
+        self.quality = QualityScorer()
 
     
     def process(self, documents):
@@ -28,6 +28,8 @@ class PreprocessingPipeline:
 
             language = self.detector.detect_language(normalized_text)
 
+            quality_metadata = self.quality.score(normalized_text)
+
             processed_documents.append(
                 {
                     **doc,
@@ -36,6 +38,7 @@ class PreprocessingPipeline:
                         **cleaner_metadata,
                         **normalizer_metadata,
                         "language": language,
+                        **quality_metadata,
                     },
                 }
             )

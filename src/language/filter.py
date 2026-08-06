@@ -14,6 +14,9 @@ class LanguageFilter:
             if doc["metadata"]["language"] in self.supported_languages:
                 accepted.append(doc)
             else:
-                rejected.append(doc)
+                rejected.append({
+                    "documents": doc,
+                    "reason": f"Unsupported language: {doc['metadata']['language']}" 
+                })
 
         return accepted, rejected

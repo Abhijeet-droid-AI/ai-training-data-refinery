@@ -1,0 +1,13 @@
+{
+	"documents_processed": 100,
+	"accepted": 92,
+	"rejected": 8,
+	"average_score": 91.4,
+	"grade_distribution": {
+		"A": 65,
+		"B": 17,
+		"C": 10,
+		"D": 4,
+		"F": 4
+	}
+}
