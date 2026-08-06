@@ -145,6 +145,24 @@ Goal:
 
 Measure execution time and memory usage for different processing engines.
 
+## Analytics Layer
+
+Current analytics stack:
+
+Parquet
+
+↓
+
+DuckDB
+
+↓
+
+SQL Analytics
+
+↓
+
+JSON Reports
+
 ## License
 
 MIT

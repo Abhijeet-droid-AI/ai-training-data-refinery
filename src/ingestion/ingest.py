@@ -8,6 +8,7 @@ from src.profiling.profiler import DatasetProfiler
 from src.profiling.report_writer import ReportWriter
 from src.storage.parquet_converter import ParquetConverter
 from src.utils.paths import PARQUET_FILE
+from src.analytics.analytics_report import AnalyticsReport
 
 logger = get_logger(__name__)
 # logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
@@ -38,6 +39,7 @@ def main():
     logger.info(f"Invalid Documents : {len(invalid_docs)}")
     logger.info("=" * 60)
 
+    # Profile the dataset
     profiler = DatasetProfiler(valid_docs)
 
     report = profiler.profile()
@@ -48,6 +50,7 @@ def main():
 
     logger.info("Dataset profile generated successfully.")
 
+    # Convert valid documents to Parquet format
     converter = ParquetConverter(valid_docs)
 
     record_written =converter.convert(PARQUET_FILE)
@@ -55,6 +58,14 @@ def main():
     logger.info("Parquet conversion completed (%d record written).",
                 record_written,
                 )
+    # Generate analytics report using DuckDB
+    analytics = AnalyticsReport()
+
+    report = analytics.generate()
+
+    logger.info("DuckDB analytics report generated.")
+
+    logger.info(report)
 
     if invalid_docs:
         logger.warning("Invalid document details:")
