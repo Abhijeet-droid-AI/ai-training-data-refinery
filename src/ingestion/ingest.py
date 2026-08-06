@@ -50,9 +50,11 @@ def main():
 
     converter = ParquetConverter(valid_docs)
 
-    converter.convert(PARQUET_FILE)
+    record_written =converter.convert(PARQUET_FILE)
 
-    logger.info("Parquet dataset created successfully.")
+    logger.info("Parquet conversion completed (%d record written).",
+                record_written,
+                )
 
     if invalid_docs:
         logger.warning("Invalid document details:")
