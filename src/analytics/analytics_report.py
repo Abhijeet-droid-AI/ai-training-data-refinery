@@ -49,3 +49,33 @@ class AnalyticsReport:
         db.close()
 
         return result.to_dict(orient="records")
+
+    #future total documents count.
+    def total_documents(self):
+        db = DuckDBEngine()
+
+        query = f"""
+        SELECT COUNT(*) AS total_documents
+        FROM read_parquet('{PARQUET_FILE.as_posix()}')
+        """
+
+        result = db.query(query)
+
+        db.close()
+
+        return result.iloc[0]["total_documents"]
+
+    #future average document length.
+    def average_document_length(self):
+        db = DuckDBEngine()
+
+        query = f"""
+        SELECT AVG(LENGTH(text)) AS average_text_length
+        FROM read_parquet('{PARQUET_FILE.as_posix()}')
+        """
+
+        result = db.query(query)
+
+        db.close()
+
+        return result.iloc[0]["average_text_length"]

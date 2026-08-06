@@ -163,6 +163,15 @@ SQL Analytics
 
 JSON Reports
 
+## NLP Preprocessing
+
+Current preprocessing stages:
+
+- HTML Removal
+- Unicode Normalization
+- Whitespace Cleanup
+- Control Character Removal
+
 ## License
 
 MIT
