@@ -204,6 +204,26 @@ Upcoming:
 - Locality Sensitive Hashing (LSH)
 - Near-duplicate detection
 
+### Data Lineage
+
+Each document receives a deterministic SHA256 fingerprint during
+deduplication.
+
+Unique documents contain:
+
+- `fingerprint`
+- `is_duplicate`
+- `duplicate_group`
+
+Rejected duplicate documents retain:
+
+- `fingerprint`
+- `duplicate_of`
+- `reason`
+
+This allows duplicate decisions to be traced back to the
+original document.
+
 ## License
 
 MIT

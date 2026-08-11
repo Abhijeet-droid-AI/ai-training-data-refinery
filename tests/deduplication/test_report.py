@@ -19,6 +19,8 @@ def test_deduplication_report():
                 "metadata": {},
             },
             "reason": "duplicate",
+            "fingerprint": "abc123",
+            "duplicate_of": 1,
         }
     ]
 
@@ -32,3 +34,4 @@ def test_deduplication_report():
     assert report["total_documents"] == 2
     assert report["unique_documents"] == 1
     assert report["duplicates_removed"] == 1
+    assert report["duplicate_rate"] == 0.5

@@ -128,6 +128,24 @@ def main() -> None:
             filtered_docs
         )
 
+        logger.info("Unique Document Metadata:")
+
+        for document in unique_docs:
+            logger.info(
+                "Document ID: %s | Metadata: %s",
+                document["id"],
+                document["metadata"],
+            )
+
+        logger.info("Duplicate Document Details:")
+
+        for duplicate in duplicate_docs:
+            logger.info(
+                "Document ID: %s | Duplicate Of: %s | Fingerprint: %s",
+                duplicate["document"]["id"],
+                duplicate["duplicate_of"],
+                duplicate["fingerprint"],
+            )
         logger.info(
             "Deduplication | Unique: %d | Duplicates: %d",
             len(unique_docs),

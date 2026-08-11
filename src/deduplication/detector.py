@@ -3,39 +3,61 @@ from src.deduplication.fingerprint import FingerprintGenerator
 
 class DuplicateDetector:
     """
-    Removes exact duplicate documents.
+    Detects exact duplicate documents using SHA256 fingerprints.
     """
 
     def detect(self, documents):
 
-        seen = set()
+        seen = {}
 
-        unique = []
+        unique_documents = []
+        duplicate_documents = []
 
-        duplicates = []
+        for document in documents:
 
-        for doc in documents:
+            document.setdefault("metadata", {})
 
             fingerprint = FingerprintGenerator.generate(
-                doc["text"]
+                document["text"]
             )
 
+            duplicate_group = f"sha256:{fingerprint}"
+
+            # --------------------------------------------------
+            # Duplicate Document
+            # --------------------------------------------------
             if fingerprint in seen:
 
-                duplicates.append(
+                original_document = seen[fingerprint]
+
+                document["metadata"]["fingerprint"] = fingerprint
+                document["metadata"]["is_duplicate"] = True
+                document["metadata"]["duplicate_group"] = (
+                    duplicate_group
+                )
+
+                duplicate_documents.append(
                     {
-                        "document": doc,
+                        "document": document,
                         "reason": "duplicate",
                         "fingerprint": fingerprint,
+                        "duplicate_of": original_document["id"],
                     }
                 )
 
+            # --------------------------------------------------
+            # Unique Document
+            # --------------------------------------------------
             else:
 
-                seen.add(fingerprint)
+                document["metadata"]["fingerprint"] = fingerprint
+                document["metadata"]["is_duplicate"] = False
+                document["metadata"]["duplicate_group"] = (
+                    duplicate_group
+                )
 
-                doc["metadata"]["fingerprint"] = fingerprint
+                seen[fingerprint] = document
 
-                unique.append(doc)
+                unique_documents.append(document)
 
-        return unique, duplicates
+        return unique_documents, duplicate_documents
