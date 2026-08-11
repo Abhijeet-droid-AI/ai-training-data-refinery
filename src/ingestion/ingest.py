@@ -1,22 +1,25 @@
+from src.analytics.analytics_report import AnalyticsReport
+from src.deduplication.detector import DuplicateDetector
+from src.deduplication.report import DeduplicationReport
 from src.ingestion.loader import DataLoader
 from src.ingestion.validator import DataValidator
-from src.utils.logger import get_logger
-from src.utils.paths import RAW_DATA_DIR, PARQUET_FILE
-from src.utils.config import load_config
+from src.language.filter import LanguageFilter
+from src.language.report import LanguageReport
+from src.preprocessing.pipeline import PreprocessingPipeline
 from src.profiling.profiler import DatasetProfiler
 from src.profiling.report_writer import ReportWriter
 from src.storage.parquet_converter import ParquetConverter
-from src.analytics.analytics_report import AnalyticsReport
-from src.preprocessing.pipeline import PreprocessingPipeline
-from src.language.filter import LanguageFilter
-from src.language.report import LanguageReport
+from src.utils.config import load_config
+from src.utils.logger import get_logger
+from src.utils.paths import PARQUET_FILE, RAW_DATA_DIR
+
 
 logger = get_logger(__name__)
-# logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
+
 
 def main() -> None:
     """
-    Executes the complete AI Training Data Refinery pipeline.
+    Execute the complete AI Training Data Refinery pipeline.
 
     Pipeline:
         Load Dataset
@@ -25,9 +28,13 @@ def main() -> None:
             ↓
         Preprocess Text
             ↓
-        Profile Dataset
+        Detect Language
             ↓
-        Save Profile Report
+        Filter Languages
+            ↓
+        Deduplicate
+            ↓
+        Profile Dataset
             ↓
         Convert to Parquet
             ↓
@@ -64,7 +71,7 @@ def main() -> None:
         logger.info("=" * 60)
 
         # --------------------------------------------------
-        # Preprocessing Pipeline (Day 8)
+        # Preprocessing
         # --------------------------------------------------
         logger.info("Starting preprocessing pipeline...")
 
@@ -78,11 +85,76 @@ def main() -> None:
         )
 
         # --------------------------------------------------
+        # Language Distribution Report
+        # --------------------------------------------------
+        logger.info("Generating language distribution report...")
+
+        language_report_writer = LanguageReport()
+
+        language_report = language_report_writer.generate(
+            processed_docs
+        )
+
+        logger.info(
+            "Language distribution: %s",
+            language_report,
+        )
+
+        # --------------------------------------------------
+        # Language Filtering
+        # --------------------------------------------------
+        logger.info("Filtering supported languages...")
+
+        language_filter = LanguageFilter(["en"])
+
+        filtered_docs, rejected_docs = language_filter.filter(
+            processed_docs
+        )
+
+        logger.info(
+            "Language Filter | Accepted: %d | Rejected: %d",
+            len(filtered_docs),
+            len(rejected_docs),
+        )
+
+        # --------------------------------------------------
+        # Deduplication
+        # --------------------------------------------------
+        logger.info("Starting duplicate detection...")
+
+        duplicate_detector = DuplicateDetector()
+
+        unique_docs, duplicate_docs = duplicate_detector.detect(
+            filtered_docs
+        )
+
+        logger.info(
+            "Deduplication | Unique: %d | Duplicates: %d",
+            len(unique_docs),
+            len(duplicate_docs),
+        )
+
+        # --------------------------------------------------
+        # Deduplication Report
+        # --------------------------------------------------
+        dedup_report_writer = DeduplicationReport()
+
+        dedup_report = dedup_report_writer.generate(
+            unique_docs,
+            duplicate_docs,
+        )
+
+        logger.info(
+            "Deduplication report generated: %s",
+            dedup_report,
+        )
+
+        # --------------------------------------------------
         # Dataset Profiling
         # --------------------------------------------------
         logger.info("Generating dataset profile...")
 
-        profiler = DatasetProfiler(processed_docs)
+        profiler = DatasetProfiler(unique_docs)
 
         profile_report = profiler.profile()
 
@@ -97,7 +169,7 @@ def main() -> None:
         # --------------------------------------------------
         logger.info("Converting dataset to Parquet...")
 
-        converter = ParquetConverter(processed_docs)
+        converter = ParquetConverter(unique_docs)
 
         records_written = converter.convert(PARQUET_FILE)
 
@@ -138,30 +210,21 @@ def main() -> None:
                 )
 
         # --------------------------------------------------
-        # Language Distribution Report
+        # Pipeline Summary
         # --------------------------------------------------
-        logger.info("Generating language distribution report...")
-
-        language_filter = LanguageFilter(["en"])
-        filtered_docs, rejected_docs = language_filter.filter(processed_docs)
-        # logger.info("Language distribution report generated successfully.")
-
-        logger.info(
-            "Language Filter: %d accepted | %d rejected",
-            len(filtered_docs),
-            len(rejected_docs),
-        )
-
         logger.info("=" * 60)
+        logger.info("FINAL PIPELINE SUMMARY")
+        logger.info("=" * 60)
+        logger.info("Input Documents       : %d", len(documents))
+        logger.info("Valid Documents       : %d", len(valid_docs))
+        logger.info("Language Accepted     : %d", len(filtered_docs))
+        logger.info("Language Rejected     : %d", len(rejected_docs))
+        logger.info("Unique Documents      : %d", len(unique_docs))
+        logger.info("Duplicates Removed    : %d", len(duplicate_docs))
+        logger.info("Parquet Records       : %d", records_written)
+        logger.info("=" * 60)
+
         logger.info("Pipeline completed successfully.")
-        logger.info("=" * 60)
-
-        #Language Distribution Report
-        language_report = LanguageReport()
-
-        report = language_report.generate(filtered_docs)
-
-        logger.info(report)
 
     except FileNotFoundError as exc:
         logger.error("Dataset file not found: %s", exc)
@@ -169,6 +232,7 @@ def main() -> None:
     except Exception:
         logger.exception("Pipeline execution failed.")
         raise
+
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,7 @@
 {
-    "total_documents": 1,
+    "total_documents": 3,
     "language_distribution": {
-        "en": 1
+        "en": 2,
+        "it": 1
     }
 }

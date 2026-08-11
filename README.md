@@ -190,6 +190,20 @@ Current heuristics:
 - Vocabulary Diversity
 - Quality Grade (A–F)
 
+## Deduplication
+
+Current capabilities:
+
+- SHA256 fingerprint generation
+- Exact duplicate detection
+- Deduplication report generation
+
+Upcoming:
+
+- MinHash
+- Locality Sensitive Hashing (LSH)
+- Near-duplicate detection
+
 ## License
 
 MIT
