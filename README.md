@@ -224,6 +224,37 @@ Rejected duplicate documents retain:
 This allows duplicate decisions to be traced back to the
 original document.
 
+## Near-Duplicate Detection
+
+### Shingling
+
+Documents are converted into word-based shingles to represent
+local text patterns.
+
+### Jaccard Similarity
+
+Jaccard similarity measures the overlap between two sets of shingles:
+
+J(A,B) = |A ∩ B| / |A ∪ B|
+
+### MinHash
+
+MinHash produces compact signatures that approximately preserve
+Jaccard similarity.
+
+Instead of comparing potentially thousands of shingles directly,
+documents can be represented using a fixed-size MinHash signature.
+
+The current implementation supports configurable numbers of
+hash functions.
+
+### Current Limitation
+
+MinHash signatures alone do not solve the O(n²) comparison problem.
+
+Locality Sensitive Hashing (LSH) will be introduced to efficiently
+generate candidate near-duplicate pairs.
+
 ## License
 
 MIT
