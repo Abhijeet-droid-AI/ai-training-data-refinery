@@ -45,10 +45,15 @@
 ## Roadmap
 
 - [x] Project Initialization
-- [ ] Data Ingestion
-- [ ] Data Cleaning
-- [ ] Quality Scoring
-- [ ] Deduplication
+- [x] Data Ingestion
+- [x] Dataset Profiling
+- [x] Parquet Storage
+- [x] Benchmarking (Pandas vs Polars)
+- [x] Analytics Layer (DuckDB)
+- [x] Data Cleaning
+- [x] Quality Scoring
+- [x] Deduplication (Exact + Near-Duplicate)
+- [x] Anomaly Detection
 - [ ] Dashboard
 - [ ] LLM Experiment
 
@@ -56,17 +61,42 @@
 
 ## Current Progress
 
-### ✅ Phase 1
+### ✅ Phase 1 — Foundation
 
 - Repository initialized
 - Development environment configured
+- Project architecture and documentation structure
 
-### 🚧 Phase 2
+### ✅ Phase 2 — Core Pipeline
 
-- Basic data ingestion pipeline
-- JSON loader
-- Document validator
-- Configuration management
+- Data ingestion with validation and logging
+- Dataset profiling and report generation
+- Parquet storage layer (PyArrow)
+- Benchmarking framework (Pandas vs Polars)
+- DuckDB analytics layer with JSON reports
+- Text preprocessing (cleaning and normalization)
+- Language detection and filtering
+- Rule-based quality scoring (grades A–F)
+
+### ✅ Phase 3 — Deduplication
+
+- Exact duplicate detection with SHA256 fingerprints
+- Document lineage and duplicate tracking
+- MinHash signatures with Jaccard similarity estimation
+- LSH banding for candidate pair generation
+- Near-duplicate detection with Jaccard verification
+
+### ✅ Phase 4 — Anomaly Detection
+
+- Rule-based anomaly heuristics
+- Flag-and-keep detection (no silent data loss)
+- Per-document anomaly reasons in metadata
+- Anomaly summary report with reason counts
+
+### 🚧 Phase 5 — Upcoming
+
+- Dashboard
+- Mini LLM training experiment
 
 ## Pipeline
 
@@ -273,6 +303,32 @@ T = (1 / bands)^(1 / rows_per_band)
 With 20 bands and 5 rows per band this is roughly 0.55, so documents
 with an estimated Jaccard similarity of about 0.55 or higher are
 likely to be surfaced as candidates.
+
+## Anomaly Detection
+
+The anomaly detector flags suspicious documents using
+rule-based heuristics instead of removing them.
+
+Flagged documents stay in the dataset and carry metadata:
+
+- `anomaly`
+- `anomaly_reasons`
+
+This keeps every filtering decision auditable and
+reversible.
+
+### Current heuristics
+
+- Minimum document length
+- Character repetition ratio
+- Word repetition ratio
+- Symbol ratio
+- Gibberish detection (vowel-less or tiny-alphabet words)
+
+Each document records the list of triggered reasons,
+for example:
+
+`["too_short:5<20", "word_repetition:0.85"]`
 
 ## License
 

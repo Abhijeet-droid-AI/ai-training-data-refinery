@@ -1,4 +1,6 @@
 from src.analytics.analytics_report import AnalyticsReport
+from src.anomaly.detector import AnomalyDetector
+from src.anomaly.report import AnomalyReport
 from src.deduplication.detector import DuplicateDetector
 from src.deduplication.report import DeduplicationReport
 from src.ingestion.loader import DataLoader
@@ -33,6 +35,8 @@ def main() -> None:
         Filter Languages
             ↓
         Deduplicate
+            ↓
+        Detect Anomalies
             ↓
         Profile Dataset
             ↓
@@ -179,6 +183,45 @@ def main() -> None:
         )
 
         # --------------------------------------------------
+        # Anomaly Detection
+        # --------------------------------------------------
+        logger.info("Detecting anomalous documents...")
+
+        anomaly_detector = AnomalyDetector()
+
+        anomaly_accepted, anomaly_flagged = (
+            anomaly_detector.detect(unique_docs)
+        )
+
+        for flagged in anomaly_flagged:
+            logger.info(
+                "Document ID: %s | Anomaly Reasons: %s",
+                flagged["document"]["id"],
+                flagged["reasons"],
+            )
+
+        logger.info(
+            "Anomaly Detection | Accepted: %d | Flagged: %d",
+            len(anomaly_accepted),
+            len(anomaly_flagged),
+        )
+
+        # --------------------------------------------------
+        # Anomaly Report
+        # --------------------------------------------------
+        anomaly_report_writer = AnomalyReport()
+
+        anomaly_report = anomaly_report_writer.generate(
+            unique_docs,
+            anomaly_flagged,
+        )
+
+        logger.info(
+            "Anomaly report generated: %s",
+            anomaly_report,
+        )
+
+        # --------------------------------------------------
         # Dataset Profiling
         # --------------------------------------------------
         logger.info("Generating dataset profile...")
@@ -250,6 +293,7 @@ def main() -> None:
         logger.info("Language Rejected     : %d", len(rejected_docs))
         logger.info("Unique Documents      : %d", len(unique_docs))
         logger.info("Duplicates Removed    : %d", len(duplicate_docs))
+        logger.info("Anomalies Flagged     : %d", len(anomaly_flagged))
         logger.info("Parquet Records       : %d", records_written)
         logger.info("=" * 60)
 
