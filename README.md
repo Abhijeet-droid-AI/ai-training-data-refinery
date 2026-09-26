@@ -196,13 +196,9 @@ Current capabilities:
 
 - SHA256 fingerprint generation
 - Exact duplicate detection
+- Near-duplicate detection (MinHash + LSH)
+- Jaccard verification of LSH candidate pairs
 - Deduplication report generation
-
-Upcoming:
-
-- MinHash
-- Locality Sensitive Hashing (LSH)
-- Near-duplicate detection
 
 ### Data Lineage
 
@@ -220,6 +216,12 @@ Rejected duplicate documents retain:
 - `fingerprint`
 - `duplicate_of`
 - `reason`
+
+Near-duplicate documents additionally contain:
+
+- `is_near_duplicate`
+- `near_duplicate_of`
+- `near_duplicate_similarity`
 
 This allows duplicate decisions to be traced back to the
 original document.
@@ -248,12 +250,29 @@ documents can be represented using a fixed-size MinHash signature.
 The current implementation supports configurable numbers of
 hash functions.
 
-### Current Limitation
+### Locality Sensitive Hashing (LSH)
 
-MinHash signatures alone do not solve the O(n²) comparison problem.
+MinHash signatures alone require comparing every document against
+every other document, which grows as O(n²).
 
-Locality Sensitive Hashing (LSH) will be introduced to efficiently
-generate candidate near-duplicate pairs.
+LSH banding solves this by splitting each signature into bands.
+Documents that share an identical band are grouped into the same
+bucket and become candidate near-duplicate pairs.
+
+Current configuration:
+
+- 20 bands × 5 rows per band = 100 hash functions
+- Band keys are deterministic SHA256 digests
+- Similar documents share at least one band bucket
+
+The approximate similarity threshold for a 50% chance of becoming
+a candidate is:
+
+T = (1 / bands)^(1 / rows_per_band)
+
+With 20 bands and 5 rows per band this is roughly 0.55, so documents
+with an estimated Jaccard similarity of about 0.55 or higher are
+likely to be surfaced as candidates.
 
 ## License
 

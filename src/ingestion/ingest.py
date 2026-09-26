@@ -146,6 +146,16 @@ def main() -> None:
                 duplicate["duplicate_of"],
                 duplicate["fingerprint"],
             )
+
+        logger.info("Near-Duplicate Document Details:")
+
+        for near_duplicate in duplicate_detector.near_duplicates:
+            logger.info(
+                "Document ID: %s | Near-Duplicate Of: %s | Similarity: %s",
+                near_duplicate["document"]["id"],
+                near_duplicate["duplicate_of"],
+                near_duplicate["similarity"],
+            )
         logger.info(
             "Deduplication | Unique: %d | Duplicates: %d",
             len(unique_docs),
@@ -160,6 +170,7 @@ def main() -> None:
         dedup_report = dedup_report_writer.generate(
             unique_docs,
             duplicate_docs,
+            duplicate_detector.near_duplicates,
         )
 
         logger.info(

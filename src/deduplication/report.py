@@ -8,7 +8,14 @@ class DeduplicationReport:
     Generates a deduplication summary report.
     """
 
-    def generate(self, unique_docs, duplicate_docs):
+    def generate(
+        self,
+        unique_docs,
+        duplicate_docs,
+        near_duplicates=None,
+    ):
+
+        near_duplicates = near_duplicates or []
 
         report = {
             "total_documents": (
@@ -24,6 +31,7 @@ class DeduplicationReport:
                 ),
                 3,
             ),
+            "near_duplicates_found": len(near_duplicates),
         }
 
         report_path = (
