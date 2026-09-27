@@ -1,7 +1,7 @@
 {
-    "total_documents": 4,
-    "unique_documents": 3,
+    "total_documents": 2,
+    "unique_documents": 1,
     "duplicates_removed": 1,
-    "duplicate_rate": 0.25,
-    "near_duplicates_found": 1
+    "duplicate_rate": 0.5,
+    "near_duplicates_found": 0
 }
