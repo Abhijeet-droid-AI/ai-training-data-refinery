@@ -1,2 +1,19 @@
 data:
   raw_file: wiki_sample.json
+  training_corpus: training_corpus.json
+
+training:
+  seq_len: 16
+  batch_size: 4
+  steps: 300
+  d_model: 32
+  n_layers: 2
+  n_heads: 2
+  learning_rate: 0.01
+  clip_norm: 1.0
+  seed: 42
+  sample_prompts: 3
+  sample_tokens: 60
+
+training_experiment:
+  default_config: training_experiment.yaml

@@ -16,4 +16,14 @@ PARQUET_DATA_DIR = DATA_DIR / "parquet"
 
 PARQUET_FILE = PARQUET_DATA_DIR / "training_dataset.parquet"
 
+MODEL_CHECKPOINT_FILE = (
+    PROCESSED_DATA_DIR
+    / "mini_gpt_model.npz"
+)
+
+TOKENIZER_FILE = (
+    PROCESSED_DATA_DIR
+    / "mini_gpt_tokenizer.json"
+)
+
 DOCS_DIR = PROJECT_ROOT / "docs"

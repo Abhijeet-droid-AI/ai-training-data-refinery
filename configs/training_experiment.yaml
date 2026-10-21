@@ -1,0 +1,33 @@
+# Mini LLM training experiment configuration.
+#
+# A character-level GPT (MiniGPT) learns from the refined
+# Parquet corpus produced by the full data pipeline.
+#
+# Run with:  python -m src.training.main
+#
+training:
+  # Sequence length: number of tokens in each training window.
+  # Tokens are drawn with wraparound indexing so tiny corpora
+  # still produce valid batches.
+  seq_len: 16
+
+  # Batch size: number of windows sampled per training step.
+  batch_size: 4
+
+  # Number of optimizer steps.
+  steps: 600
+
+  # Model capacity.
+  d_model: 32
+  n_layers: 2
+  n_heads: 2
+
+  # Optimizer settings.
+  learning_rate: 0.01
+  clip_norm: 1.0
+  seed: 42
+
+  # Sample prompts shown after training so the checkpoint can
+  # be inspected without a separate script.
+  sample_prompts: 3
+  sample_tokens: 60
